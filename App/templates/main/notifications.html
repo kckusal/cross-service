@@ -1,0 +1,32 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Notifications{% endblock %}
+
+{% block page-content %}
+    <p class="">
+        You've <span class="has-text-info has-text-weight-bold">
+            {{ unread_notifications_count }}</span> unread notifications.
+        <a href="{% url 'read-notification-all' %}" class="button is-small is-rounded is-pulled-right is-link">Mark all as read</a>
+    </p>
+
+    {% for notification in notifications %}
+    <fieldset class="m-t-lg" style="border-top: 1px solid #ccc;">
+        <legend class="subtitle is-6 has-text-centered has-text-weight-bold p-l-sm p-r-sm">{{ notification.created_datetime }}</legend>
+
+        <div class="notification {% if notification.is_read %}has-background-ter{% else %}has-background-white{% endif %}">
+            {% if notification.is_read %}
+            <span class="is-text p-sm is-pulled-right is-size-7 fas fa-check-double" title="Marked as read."></span>
+            {% else %}
+            <a href="{% url 'read-notification' notification.id %}" class="button is-size-7 is-pulled-right" title="Mark as read?" >
+                <span class="icon is-normal">
+                    <i class="fas fa-check"></i>
+                </span>
+            </a>
+            {% endif %}
+            {{ notification.text }} 
+        </div>
+    </fieldset>
+    {% endfor %}
+
+
+{% endblock %}

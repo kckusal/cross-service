@@ -1,0 +1,253 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Search Service Posts{% endblock %}
+
+{% block page-content %}
+    
+    {% load static %}
+    <script src="{% static 'js/service.js' %}"></script>
+
+    <div class="columns">
+    <nav class="breadcrumb column" aria-label="breadcrumbs">
+        <ul>
+            <li>
+                <a href="{% url 'service:explore' %}">
+                    <span>Services</span>
+                </a>
+            </li>
+            
+            <li class="is-active">
+                <a href="{% url 'service:search' %}">
+                    <span>Search</span>
+                </a>
+            </li>
+            
+        </ul>
+    </nav>
+    <div class="column">
+        <a class="button is-pulled-right is-size-6 " href="{% url 'service:explore' %}">Explore All</a>
+    </div>
+    </div>
+
+
+    <form method="GET" action="{% url 'service:search' %}">
+        <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+                <input type="text" name="service_search_text" class="input is-medium" placeholder="Search for service posts" />
+                <span class="icon is-left">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            
+            <div class="control">
+                <input type="submit" class="input button is-medium is-info" value="Search" />
+            </div>
+        </div>
+    </form>
+
+    <div class="tabs is-toggle is-centered m-t-md m-b-md">
+        <ul>
+            <li class="is-active search-result-toggler" onclick="showSearchResultTab(this, 0);">
+                <a>
+                    <span>..in Title/Name
+                        <span class="tag is-size-7 is-family-code is-dark has-text-weight-semibold is-normal is-rounded ">{{ title_matches.count }}</span>
+                    </span>
+                </a>
+            </li>
+
+            <li class="search-result-toggler" onclick="showSearchResultTab(this, 1);">
+                <a>
+                    <span>..in Description
+                        <span class="tag is-dark is-family-code has-text-weight-semibold is-normal is-rounded ">{{ description_matches.count }}</span>
+                    </span>
+                </a>
+            </li>
+
+            <li class="search-result-toggler" onclick="showSearchResultTab(this, 2);">
+                <a>
+                    <span>..in Location
+                        <span class="tag is-dark is-family-code has-text-weight-semibold is-normal is-rounded ">{{ location_matches.count }}</span>
+                    </span>
+                </a>
+            </li>
+
+            <li class="search-result-toggler" onclick="showSearchResultTab(this,3);">
+                <a>
+                    <span>..in Service Tags
+                        <span class="tag is-dark is-family-code has-text-weight-semibold is-normal is-rounded ">{{ tag_matches.count }}</span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <fieldset class="m-t-lg m-b-lg" style="border-top: 1px solid #ccc;">
+        <legend class="subtitle is-4 p-r-sm p-l-sm has-text-weight-semibold has-text-centered">Results</legend>
+        
+        <div class="search-result">
+        {% if title_matches %}
+            {% for post in title_matches %}
+                <div class="box" style="position: relative;">
+                    <div class="has-text-white tag has-text-centered has-text-weight-semibold" style="position: absolute; top: 12px; right: -15px; transform: rotate(45deg); background-color: {% if post.is_request_post %}#2366d1{% else %}#00b89c{% endif %}; width: 80px; letter-spacing:1px;" title="Whether the service is being requested or offered!">
+                        {% if post.is_request_post %}
+                            REQUEST
+                        {% else %}
+                            OFFERING
+                        {% endif %}    
+                    </div>
+
+                    <a class="level title is-5 is-link" href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                    <div class="level subtitle is-6">
+                        {{ post.service.name }}
+                    </div>
+
+                    <div class="level has-text">
+                        <div class="level-left">
+                            <span class="icon">
+                                <i class="far fa-compass"></i>
+                            </span>
+                            {{ post.service.location }}
+                        </div>
+                        <div class="level-right">
+                            <span class="has-text-weight-bold">TAGS:</span>&nbsp;
+                            {{ post.service.get_tags }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="subtitle is-6">
+                There are no matching results in this category.
+            </p>
+        {% endif %}
+        </div>
+
+        <div class="is-hidden search-result">
+        {% if description_matches %}
+            {% for post in description_matches %}
+                <div class="box" style="position: relative;">
+                    <div class="has-text-white tag has-text-centered has-text-weight-semibold" style="position: absolute; top: 12px; right: -15px; transform: rotate(45deg); background-color: {% if post.is_request_post %}#2366d1{% else %}#00b89c{% endif %}; width: 80px; letter-spacing:1px;" title="Whether the service is being requested or offered!">
+                        {% if post.is_request_post %}
+                            REQUEST
+                        {% else %}
+                            OFFERING
+                        {% endif %}    
+                    </div>
+
+                    <a class="level title is-5 is-link" href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                    <div class="level">
+                        {{ post.description }}
+                    </div>
+
+                    <div class="level subtitle is-6">
+                        {{ post.service.info }}
+                    </div>
+
+                    <div class="level has-text">
+                        <div class="level-left">
+                            <span class="icon">
+                                <i class="far fa-compass"></i>
+                            </span>
+                            {{ post.service.location }}
+                        </div>
+                        <div class="level-right">
+                            <span class="has-text-weight-bold">TAGS:</span>&nbsp;
+                            {{ post.service.get_tags }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="subtitle is-6">
+                There are no results matching this category!
+            </p>
+        {% endif %}
+        </div>
+
+        <div class="is-hidden search-result">
+        {% if location_matches %}
+            {% for post in location_matches %}
+                <div class="box" style="position: relative;">
+                    <div class="has-text-white tag has-text-centered has-text-weight-semibold" style="position: absolute; top: 12px; right: -15px; transform: rotate(45deg); background-color: {% if post.is_request_post %}#2366d1{% else %}#00b89c{% endif %}; width: 80px; letter-spacing:1px;" title="Whether the service is being requested or offered!">
+                        {% if post.is_request_post %}
+                            REQUEST
+                        {% else %}
+                            OFFERING
+                        {% endif %}    
+                    </div>
+
+                    <a class="level title is-5 is-link" href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                    <div class="level subtitle is-6">
+                        {{ post.service.name }}
+                    </div>
+
+                    <div class="level has-text">
+                        <div class="level-left">
+                            <span class="icon">
+                                <i class="far fa-compass"></i>
+                            </span>
+                            {{ post.service.location }}
+                        </div>
+                        <div class="level-right">
+                            <span class="has-text-weight-bold">TAGS:</span>&nbsp;
+                            {{ post.service.get_tags }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="subtitle is-6">
+                There are no results matching this category!
+            </p>
+        {% endif %}
+        </div>
+
+
+        <div class="is-hidden search-result">
+        {% if tag_matches %}
+            {% for post in tag_matches %}
+                <div class="box" style="position: relative;">
+                    <div class="has-text-white tag has-text-centered has-text-weight-semibold" style="position: absolute; top: 12px; right: -15px; transform: rotate(45deg); background-color: {% if post.is_request_post %}#2366d1{% else %}#00b89c{% endif %}; width: 80px; letter-spacing:1px;" title="Whether the service is being requested or offered!">
+                        {% if post.is_request_post %}
+                            REQUEST
+                        {% else %}
+                            OFFERING
+                        {% endif %}    
+                    </div>
+
+                    <a class="level title is-5 is-link" href="{{ post.get_absolute_url }}">
+                        {{ post.title }}
+                    </a>
+                    <div class="level subtitle is-6">
+                        {{ post.service.name }}
+                    </div>
+
+                    <div class="level has-text">
+                        <div class="level-left">
+                            <span class="icon">
+                                <i class="far fa-compass"></i>
+                            </span>
+                            {{ post.service.location }}
+                        </div>
+                        <div class="level-right">
+                            <span class="has-text-weight-bold">TAGS:</span>&nbsp;
+                            {{ post.service.get_tags }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="subtitle is-6">
+                There are no results to display. You probably have not searched for anything yet!
+            </p>
+        {% endif %}
+        </div>
+
+    </fieldset>
+{% endblock %}

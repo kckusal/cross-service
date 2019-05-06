@@ -1,0 +1,189 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}{{ post.title }}{% endblock %}
+
+{% block page-content %}
+    {% load static %}
+    <script src="{% static 'js/service.js' %}"></script>
+
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li>
+                <a href="{% url 'service:explore' %}">
+                    <span>Services</span>
+                </a>
+            </li>
+            
+            <li class="is-active" style="">
+                <a style="" href="{{ post.get_absolute_url }}">
+                    <span>{{ post.title }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    {% if user == post.owner %}
+    <div class="columns p-sm">
+        <div class="column">
+            <a class="is-link" href="{% url 'service:update' post.id %}">Update Post</a>
+        </div>
+        <div class="column has-addons has-text-right">
+            {% if post.closed_datetime is None %}
+            <span class="tag has-textweight-bold">Is Currently Open.</span>
+            <a class="tag button is-link" href="{% url 'service:close' post.id %}">
+                Close?
+            </a>
+            {% endif %}
+            &nbsp;&nbsp;
+            <span class="button tag is-danger">Delete?</span>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="box" style="position: relative;">
+        <div class="title is-4" style="max-height:35px;">
+            {{ post.title }}
+        </div>
+        
+        <div class="has-text-white tag has-text-centered has-text-weight-semibold" style="position: absolute; top: 12px; right: -15px; transform: rotate(45deg); background-color: {% if post.is_request_post %}#2366d1{% else %}#00b89c{% endif %}; width: 80px; letter-spacing:1px;" title="Whether the service is being requested or offered!">
+            {% if post.is_request_post %}
+                REQUEST
+            {% else %}
+                OFFERING
+            {% endif %}
+                        
+        </div>
+
+        <div class="level is-mobile">
+            <div class="level-left"></div>
+            
+            <div class="level-right">
+                <div class="level-item" style="overflow: hidden;white-space: nowrap; text-overflow: ellipsis;">
+                    <span title="Last modified on {{ post.modified_datetime }}">
+                        <span class="icon is-size-6">
+                            <i class="fas fa-calendar-check"></i>
+                        </span> {{ post.created_datetime }}
+                    </span>
+                </div>
+
+                <div class="level-item" style="overflow: hidden;white-space: nowrap; text-overflow: ellipsis;">
+                    <span title="Posted by {{ post.owner.first_name }} {{ post.owner.last_name }}">
+                        <span class="icon">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        
+                        <a class="is-link" href="javascript:void(0)" onclick="showUserData({{ post.owner.id }})">{{ post.owner.first_name }} {{ post.owner.last_name }}</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="subtitle is-6 p-t-sm">
+            {{ post.description }}
+        </div>
+
+        <div class="has-background-light p-md">
+            
+
+            <div class="title is-5 has-text-grey-dark">
+                {{ post.service.name }}
+            </div>
+
+            <div class="subtitle is-6">
+                {{ post.service.info }}
+            </div>
+
+            <div class="">
+                <span class="has-text-weight-bold m-r-md">Period:</span> {{ post.service.start_datetime }}
+                <span class="subtitle has-textweight-bold has-text-info m-l-lg m-r-lg">to</span>
+                {{ post.service.end_datetime }}
+            </div>
+
+            <p class="m-t-md">
+                <span class="has-text-weight-bold">Location</span>:
+                {{ post.service.location }}
+            </p>
+
+            <div class="tags m-t-md">
+                <span class="has-text-weight-bold m-r-md">Associated Tags:</span>
+                
+                {% for tag in post.service.tags.all %}
+                    <span class="tag is-dark">
+                        {{ tag }}
+                    </span>
+                {% endfor %}
+                
+            </div>
+
+            
+
+        </div>
+    </div>
+
+    <form method="POST" action="{% url 'service:create-comment' post.id %}">
+    {% csrf_token %}
+        
+    <div class="field">
+        <div class="control" style="position: relative;">
+            <textarea class="textarea p-md" type="text" placeholder="Leave a comment here..." style="min-height: 110px; max-height: 180px; padding-bottom:60px!important; resize:vertical;" name="comment"></textarea>
+
+            <div class="field has-addons" style="position: absolute; right: 18px; bottom:12px;">
+                <div class="control has-background-light p-l-sm p-t-sm p-r-md">
+                    <label class="checkbox">
+                    <input type="checkbox" name="is-private" /> Private
+                    </label>
+                </div>
+                <div class="control">
+                    <input type="submit" class="button is-info" value="Comment" />
+                </div>
+            </div>
+        </div>    
+    </div>
+    </form>
+
+    <fieldset class="has-text-centered m-t-lg m-b-md" style="border-top: 1px solid #ccc;">
+        <legend class="has-text-grey-darker p-l-md p-r-md is-size-4">Past Comments/Responses</legend>
+    </fieldset>
+    
+    {% if comments.0 %}
+        {% for comment in comments %}
+        {% if not comment.is_private or comment.owner.id is request.user.id or post.owner.id is request.user.id %}
+        <div class="card p-md m-b-md p-b-xxs">
+            <div class="level p-b-md" style="margin-bottom: 0!important;">
+                <a class="has-text-weight-semibold" href="javascript:void(0)" onclick="showUserData({{ comment.owner.id }});">
+                    <span class="icon is-size-6">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    {{ comment.owner.first_name }} {{ comment.owner.last_name }}
+                </a>
+                <div class="level-right">
+                    <div class="level-item">
+                        {% if comment.is_private %}
+                        <span class="icon is-size-6" title="This comment is private & visible to only selected users.">
+                            <i class="fas fa-user-shield"></i>
+                        </span>
+                        {% else %}
+                        <span class="icon is-size-6" title="This comment is public to all users.">
+                            <i class="fas fa-users"></i>
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <textarea class="textarea has-text-black-bis" style="min-height: 80px; max-height: 200px; resize: vertical; cursor: text;" disabled>{{ comment.text }}</textarea>
+            </div>
+            <div class="m-t-sm has-text-right has-text-grey-darker has-text-weight-bold">
+                {{ comment.created_datetime }}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
+    {% else %}
+        <p class="subtitle is-5 has-text-centered">
+            There are no comments so far for this post.
+        </p>
+    {% endif %}
+
+{% endblock %}

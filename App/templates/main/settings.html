@@ -1,0 +1,49 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Settings{% endblock %}
+
+{% block page-content %}
+
+    <div class="box">
+        <h4 class="title is-4">Manage Subscriptions</h4>
+        <p>
+            You can manage your subscriptions to email/telegram notifications here.
+        </p>
+    </div>
+
+    <div class="box">
+        <h4 class="title is-4">Manage Privacy</h4>
+        <p>
+            You can manage here whether you want to appear in search results or not, or whether your profile is public/private.
+        </p>
+    </div>
+
+    <div class="box">
+        <h4 class="title is-4">Deactivating your account</h4>
+        <p>
+            Thinking of taking a significant break? YOu can deactivate your account here, that way, you will
+            not be receiving any notifications or appear in search results till you log in again!
+        </p>
+    </div>
+
+    <div class="box m-t-md m-b-md">
+        <h3 class="title is-4">
+            Removing your account
+            <span class="tag is-pulled-right is-warning">Proceed with caution</span>
+        </h3>
+        <p>
+            This will delete everything related to your account. The action is irreversible; you will
+            have to create a new account again, if you want to continue to use the services.
+        </p>
+
+        <p class="has-text-centered m-lg">
+            <i class="fas fa-skull-crossbones is-size-1"></i>
+            <div class="has-text-centered">
+                <a class="button is-danger" href="{% url 'user:delete' %}">I understand, delete my account anyway!</a>
+            </div>
+        </p>
+
+
+    </div>
+
+{% endblock %}

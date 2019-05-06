@@ -1,0 +1,10 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Logged out{% endblock %}
+
+{% block page-content %}
+    <p class="notification is-white">
+        You have been successfully logged out of the system. To continue using our services,
+        <a class="is-link" href="{% url 'user:login' %}">login</a> again.
+    </p>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Login{% endblock %}
+
+{% block page-content %}
+    {% load static %}
+    <script src="{% static 'js/user.js' %}" defer></script>
+
+    {% if form.errors %}
+        <p class="notification is-warning">
+            <button class="delete"></button>
+            Your username and password didn't match. Please try again.
+        </p>
+    {% else %}
+        {% if next %}
+            {% if user.is_authenticated %}
+                <p class="notification is-warning">
+                    Your account doesn't have access to this page. To proceed,
+                    please login with an account that has access.
+                </p>
+            {% else %}
+                <div class="notification is-info">
+                    <button class="delete"></button>
+                    Please login first. You'll then be automatically taken to the requested page.
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    <form id="login-form" class="box center-h p-lg" method="post" action="{% url 'user:login' %}" style="max-width: 380px; ">
+        {% csrf_token %}
+    
+        <div class="title is-4 has-text-centered p-md">
+            Member Login
+        </div>
+
+        <div class="field has-text-centered">
+            <i class="far fa-user-circle is-size-1"></i>
+        </div>
+
+        <div class="field">
+            <label class="label" for="{{ form.username.label }}">Email</label>
+            <div class="control has-icons-left">
+                <input class="input" type="email" name="username" placeholder="you@example.com" value="" required />
+                <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                </span>
+            </div>
+        </div>
+              
+        <div class="field">
+            <label class="label" for="{{ form.password.label }}">Password</label>
+            <div class="control has-icons-left">
+                <input class="input" type="password" name="password" placeholder="xxxxxxxxxxx" value="" required />
+                <span class="icon is-small is-left">
+                    <i class="fas fa-key"></i>
+                </span>
+            </div>
+        </div>
+
+        {# Assumes you setup the password_reset view in your URLconf #}
+
+        <p class="field">
+            <a href="#">Lost password?</a>
+        </p>
+
+        <div class="field is-grouped m-t-md m-b-lg">
+            <div class="control">
+                <input type="submit" class="button is-link p-l-xl p-r-xl " value="Login" />
+            </div>
+            <div class="control">
+                <button class="button m-l-lg p-l-lg p-r-lg is-dark" onclick="clearLoginForm();">Clear</button>
+            </div>
+        </div>
+
+        <div class="field p-t-sm">
+            Not a member yet? <a class="is-text" href="{% url 'user:register' %}">Register an account</a> first.
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}" />
+    </form>
+
+{% endblock %}

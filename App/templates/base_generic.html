@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" class="{% if messages %}is-clipped{% endif %}">
+<head>
+  <title>{% block title-main %}Explore Services{% endblock %} | Cross Service</title>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
+
+  
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+  
+  <!-- Add additional CSS in static file -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  <script src="{% static 'js/main.js' %}" defer></script>
+  
+</head>
+
+<body class="has-navbar-fixed-top ">
+
+    <!-- Display any onload messages. -->
+    {% if messages %}
+    <div id="onload-modal" class="modal animated zoomIn is-active">
+        <div class="modal-background" onclick=""></div>
+        <div class="modal-card has-text-black">
+
+        {% for message in messages %}
+            {% if 'message-head' in message.tags %}
+            <header class="modal-card-head {{ message.tags }} ">
+                <p class="modal-card-title">{{ message }}</p>
+                
+                <p>
+                    {% if 'success' in message.tags %}
+                        <sup class="tag is-success">SUCCESS</sup>
+                    {% endif %}
+                    {% if 'error' in message.tags %}
+                        <sup class="tag 
+                        is-danger">ERROR</sup>
+                    {% endif %}
+                    {% if 'warning' in message.tags  %}
+                        <sup class="tag is-warning">WARNING</sup>
+                    {% endif %}
+                    {% if 'info' in message.tags %}
+                        <sup class="tag is-info">INFO</sup>
+                    {% endif %}
+                </p>
+
+            </header>
+            {% endif %}
+
+            {% if 'message-body' in message.tags %}
+            <section class="modal-card-body">
+                {{ message }}
+            </section>
+            {% endif %}
+        {% endfor %}
+
+            <footer class="modal-card-foot">
+                <button class="button is-link is-outlined" onclick="toggleModal(document.getElementById('onload-modal'));">Okay, Got it!</button>
+            </footer>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- User Info Modal -->
+    <div id="user-info-modal" class="modal animated fadeIn">
+        <div class="modal-background" onclick="this.parentNode.classList.remove('is-active');"></div>
+
+        <div class="modal-content box">
+            <!-- Any other Bulma elements you want -->
+            <div id="" class="">
+                <fieldset class="m-t-sm" style="border-top: 1px solid #ccc;">
+                    <legend class="subtitle is-5 has-text-centered has-text-weight-bold p-l-sm p-r-sm p-t-none">Basic Information</legend>
+                    
+                    <i class="is-pulled-right far fa-user-circle is-size-1"></i>
+                    
+                    <div>
+                        <label class="label">Name: </label>
+                        <span class="name subtitle"></span>
+                    </div>
+
+                    <div>
+                        <label class="label">Bio: </label><span class="bio subtitle"></span>
+                    </div>
+                    
+                    <div>
+                        <label class="label">Currently Availabile: </label>
+                        <span class="available subtitle"></span>
+                    </div>
+                    
+                </fieldset>
+
+                <fieldset class="m-t-lg" style="border-top: 1px solid #ccc;">
+                    <legend class="subtitle is-5 has-text-centered has-text-weight-bold p-l-sm p-r-sm">Contact Details</legend>
+
+                    <div>
+                        <label class="label">Email: </label>
+                        <span class="email subtitle"></span>
+                    </div>
+
+                    <div>
+                        <label class="label">Phone: </label>
+                        <span class="phone subtitle"></span>
+                    </div>
+
+                    <div>
+                        <label class="label">Address: </label>
+                        <span class="address subtitle"></span>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+
+        <button class="modal-close is-large" aria-label="close" onclick="this.parentNode.classList.remove('is-active');"></button>
+    </div>
+
+    <nav id="fixed-topbar" class="navbar is-fixed-top has-background-white-info p-xs" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand has-text-centered p-l-lg" style="width:100%;">
+            <a class="navbar-item has-poppins-text is-size-4 has-text-weight-semibold "  href="/service">
+                Cross Service
+            </a>
+            
+            <div class="navbar-end level is-mobile" style="width:100%;">
+                <div class="level-left"></div>
+                <div class="level-right has-text-right">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'user:info' %}" class="level-item is-hidden-mobile navbar-item has-icons-left">
+                        <span class="icon">
+                            <i class="fas fa-user-circle"></i>
+                        </span>&nbsp;{{ user.username }}
+                    </a>
+            
+                    <div class="level-item ">
+                        <a class="button is-link is-outlined has-text-weight-semibold m-r-sm" style="font-size: 0.8rem;" href="{% url 'user:logout' %}">
+                            <span class="icon is-size-6">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </span>
+                            &nbsp; LOG OUT
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    
+    </nav>
+
+
+    <div class="body-content columns is-gapless" style="padding: 1.5rem; min-height: calc(100vh - 3.25rem);">
+        
+        <div class="column is-narrow " style="width: 220px;">
+
+            <nav class="panel has-background-white sticky-sidebar" >
+                
+                <p class=" panel-heading has-text-centered has-background-white-ter has-text-weight-semibold">
+                    Navigation
+                </p>
+
+                {% if user.is_authenticated %}
+                <a class="panel-block {% if 'service' in navigation %}is-active has-text-weight-semibold{% endif %}" href="{% url 'service:index' %}">
+                    <span class="panel-icon">
+                        <i class="fab fa-servicestack" aria-hidden="true"></i>
+                    </span>
+                    Services
+                </a>
+				
+				<a class="panel-block {% if 'notifications' in navigation %}is-active has-text-weight-semibold{% endif %}" href="{% url 'notifications' %}" title="{% if unread_notifications_count > 0 %}{{unread_notifications_count}}{% else %}0{% endif %} unread notifications!">
+                    <span class="panel-icon">
+                        <i class="fas fa-bell" aria-hidden="true"></i>
+                    </span>
+                    Notifications &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                    <span class="tag {% if unread_notifications_count > 0 %}is-link {% else %} is-light {% endif %} has-text-weight-semibold is-normal is-rounded" title="">
+                        {% if unread_notifications_count > 0 %}{{unread_notifications_count}}{% else %}0{% endif %}
+                    </span>
+                    
+                </a>
+
+                <a class="panel-block {% if 'profile' in navigation %}is-active has-text-weight-semibold{% endif %}" href="{% url 'user:info' %}">
+                    <span class="panel-icon">
+                        <i class="fas fa-user-cog" aria-hidden="true"></i>
+                    </span>
+                    My Profile
+                </a>
+
+                <a class="panel-block {% if 'settings' in navigation %}is-active has-text-weight-semibold{% endif %}" href="{% url 'settings' %}">
+                    <span class="panel-icon">
+                        <i class="fas fa-cog" aria-hidden="true"></i>
+                    </span>
+                    Settings
+                </a>
+                {% else %}
+                <a class="panel-block {% if 'login' in navigation %}is-active has-text-weight-semibold{% endif %}" href="{% url 'user:login' %}">
+                    <span class="panel-icon">
+                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                    </span>
+                    Login
+                </a>
+
+                <a class="panel-block {% if 'register' in navigation %}is-active has-text-weight-semibold{% endif %}" href="{% url 'user:register' %}">
+                    <span class="panel-icon">
+                        <i class="fas fa-id-card" aria-hidden="true"></i>
+                    </span>
+                    Register
+                </a>
+
+                {% endif %}
+                
+            </nav>
+
+            
+
+        </div>
+        
+
+        <div class="column animated slideInDown">
+            <div class="p-lg">
+                {% block page-content %}{% endblock %}            
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+</body>
+</html>

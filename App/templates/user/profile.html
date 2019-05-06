@@ -1,0 +1,199 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Profile{% endblock %}
+
+{% block page-content %}
+    {% load static %}
+    <script src="{% static 'js/user.js' %}" defer></script>
+    
+    <div class="tabs is-centered is-toggle is-toggle-rounded">
+        <ul>
+            <li class="{% if 'activity' in request.resolver_match.url_name %}is-active{% endif %}">
+                <a id="profile-activity" href="{% url 'user:activity' %}">
+                    <span class="icon is-small"><i class="fas fa-stream" aria-hidden="true"></i></span>
+                    <span>Profile Activity</span>
+                </a>
+            </li>
+    
+            <li class="{% if 'info' in request.resolver_match.url_name %}is-active{% endif %}">
+                <a id="profile-view" href="{% url 'user:info' %}">
+                    <span class="icon is-small"><i class="far fa-user" aria-hidden="true"></i></span>
+                    <span>View Profile</span>
+                </a>
+            </li>
+
+            <li class="{% if 'update' in request.resolver_match.url_name %}is-active{% endif %}">
+                <a id="profile-update" href="{% url 'user:update' %}">
+                    <span class="icon is-small"><i class="fas fa-user-edit" aria-hidden="true"></i></span>
+                    <span>Update Profile</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    {% if 'activity' in request.resolver_match.url_name %}
+    <div id="profile-activity-content" class="">
+        <div class="subtitle has-text-centered is-size-5 p-sm">
+            Your profile activity is a <span class="is-underlined">summary of service request/offering posts</span> you made so far!
+        </div>
+
+            {% for post in posts %}
+            <fieldset class="m-t-lg" style="border-top: 1px solid #ccc;">
+        
+                <legend class="subtitle is-6 has-text-centered has-text-weight-bold p-l-sm p-r-sm">{{ post.created_datetime }}</legend>
+
+                <div class="box" style="">
+                    <div class="title is-5 has-text-grey-dark" style="height: 24px; overflow: hidden; text-overflow: ellipsis;">
+                        <a href="{{ post.get_absolute_url }}">
+                            {{ post.title }}
+                        </a>
+                    </div>
+                    <div class="" style="height: 48px; overflow:hidden; text-overflow:ellipsis;">
+                        {{ post.description }}
+                    </div>
+                </div>
+        
+            </fieldset>
+            {% endfor %}
+      
+    </div>
+    {% endif %}
+
+    {% if 'info' in request.resolver_match.url_name %}
+    <div id="profile-view-content" class="">
+        <fieldset class="m-t-lg" style="border-top: 1px solid #ccc;">
+            <legend class="subtitle is-5 has-text-centered has-text-weight-bold p-l-sm p-r-sm p-t-none">Basic Information</legend>
+            
+            <i class="is-pulled-right far fa-user-circle is-size-1"></i>
+            
+            <div>
+                <label class="label">Name: </label>{{ user.first_name }} {{ user.last_name }}
+            </div>
+
+            <div>
+                <label class="label">Bio: </label>{{ user.profile.bio }}
+            </div>
+            
+            <div>
+                <label class="label">Currently Availabile: </label>
+                {% if user.profile.available %}Yes{% else %}No{% endif %}
+            </div>
+            
+        </fieldset>
+
+        <fieldset class="m-t-lg" style="border-top: 1px solid #ccc;">
+            <legend class="subtitle is-5 has-text-centered has-text-weight-bold p-l-sm p-r-sm">Contact Details</legend>
+
+            <div>
+                <label class="label">Email: </label>{{ user.username }}
+            </div>
+
+            <div>
+                <label class="label">Phone: </label>{{ user.profile.phone }}
+            </div>
+
+            <div>
+                <label class="label">Address: </label>{{ user.profile.address }}
+            </div>
+        </fieldset>
+
+    </div>
+    {% endif %}
+
+    {% if 'update' in request.resolver_match.url_name %}
+    <div id="profile-update-content" class="">
+    <form id="update-form" method="post" action="{% url 'user:update' %}" class="box center-h p-lg" style="max-width: 700px;">
+        {% csrf_token %}
+
+        <div class="field title is-4 has-text-centered p-md">
+            Profile Update Form
+        </div>
+
+        <div class="columns m-t-md">
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label">First Name</label>
+                    <div class="control">
+                        <input type="text" class="input" name="first_name" placeholder="John" value="{{ user.first_name }}" required />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Last Name</label>
+                    <div class="control">
+                        <input type="text" class="input" name="last_name" placeholder="Doe" value="{{ user.last_name }}" required />
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label class="label">Bio</label>
+                    <div class="control">
+                        <textarea class="input" name="bio" style="resize: vertical; min-height: 115px; max-height: 200px;">{{ user.profile.bio }}</textarea>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Set Availability</label>
+                    <div class="help">Are you currently available to provide services?</div>
+                    
+                    <input type="radio" name="available" value="1" {% if user.profile.available == 1 %}checked {% endif %} required /> Yes
+                    <input type="radio" name="available" value="0" class="m-l-md" {% if user.profile.available == 0 %}checked {% endif %} required /> No
+                </div>
+
+            </div>
+
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label">Phone</label>
+                    <div class="control">
+                        <input type="tel" class="input" name="phone" placeholder="+7 (928) 9387 8219" value="{{ user.profile.phone }}"  />
+                    </div>
+                </div>
+                               
+
+                <div class="field">
+                    <label class="label">Address</label>
+                    <div class="control">
+                        <input type="text" class="input" name="address" placeholder="Universitetskaya St 1, Innopolis, Tatarstan" value="{{ user.profile.address }}" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        <input type="email" class="input" name="username" placeholder="you@example.com" value="{{ user.username }}" required />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">New Password</label>
+                    <div class="control">
+                        <input type="password" class="input" name="confirm_password" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Confirm New Password</label>
+                    <div class="control">
+                        <input type="password" class="input" name="password" />
+                    </div>
+                </div>
+
+                <div class="field is-grouped m-t-lg">
+                    <div class="control">
+                        <input type="submit" class="button p-l-xl p-r-xl is-link" value="Update" />
+                    </div>
+                    <div class="control">
+                        <button class="button p-l-lg p-r-lg is-dark" onclick="clearLoginForm();">Clear</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </form>
+    </div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Services{% endblock %}
+
+{% block page-content %}
+
+    {% load static %}
+    <script src="{% static 'js/service.js' %}"></script>
+
+    <nav id="find-services_anchor" class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+        <span class="has-text-weight-semibold">Content</span>:
+        <li><a href="#find-services_anchor">Find Services</a></li>
+        <li><a href="#create-service-posts_anchor">Create Service Post</a></li>
+        <li><a href="#my-service-posts_anchor">My Service Posts</a></li>
+        <li class=""><a href="#recent-services_anchor" aria-current="page">Recent Service Posts</a></li>
+    </ul>
+    </nav>
+
+    <form id="create-service-posts_anchor"  method="GET" action="{% url 'service:search' %}" class="box">
+        <div class="title is-5">
+            Finding Services you are looking for
+            <a href="{% url 'service:explore' %}" class="is-link is-size-6 is-pulled-right">Explore All</a>
+        </div>
+
+        <div class="field has-addons">
+            <div class="control has-icons-left is-expanded">
+                <input type="search" name="service_search_text" class="input" placeholder="Type name, keywords, locations, tags, etc. to find matching service posts." />
+                <span class="icon is-left">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            
+            <div class="control">
+                <input type="submit" class="input button is-info" value="Search" />
+            </div>
+        </div>
+    </form>
+
+    <div id="my-service-posts_anchor"  class="box">
+        <div class="title is-5">
+            Creating Service Posts
+        </div>
+        <p >
+            Didn't find what you're looking for?
+            <a class="is-link" href="{% url 'service:create' %}">Create a new service post</a>
+            requesting or offering a service.
+        </p>
+    </div>
+
+    <div id="recent-services_anchor" class="box">
+        <div class="title is-5">My Service Posts</div>
+        <p>
+            Your service posts are listed in your profile activity page.
+            <a class="is-link" href="{% url 'user:activity' %}">Go to profile activity</a>.
+        </p>
+    </div>
+
+
+    <div class="box has-background-grey-lighter m-t-xl">
+        <div class="title is-4 has-text-grey-darker">Recently Published Posts
+            <sup class="button is-pulled-right  is-size-6 "><a href="{% url 'service:explore' %}">Explore All</a></sup>
+        </div>
+
+        <div class="columns is-multiline">
+        {% for post in service_posts %}
+        <div class="box p-md is-rounded column m-t-md m-r-lg m-b-md m-l-lg" style="max-width: 360px; height: 324px; position: relative;">
+                <div class="is-size-5" style="height: 66px; overflow: hidden;text-overflow: ellipsis;" title="{{ post.title }}">
+                    {{ post.title }}
+                </div>
+                
+                <div class="columns p-t-xs" style="max-height: 40px;">
+                    <div class="has-text-white tag has-text-centered has-text-weight-semibold" style="position: absolute; top: 12px; right: -15px; transform: rotate(45deg); background-color: {% if post.is_request_post %}#2366d1{% else %}#00b89c{% endif %}; width: 80px; letter-spacing:1px;" title="Whether the service is being requested or offered!">
+                        {% if post.is_request_post %}
+                            REQUEST
+                        {% else %}
+                            OFFERING
+                        {% endif %}
+                        
+                    </div>
+
+                    <span class="column is-half" style="overflow: hidden;white-space: nowrap; text-overflow: ellipsis;" title="Posted on {{ post.created_datetime }}">
+                        <span class="icon is-size-6">
+                            <i class="fas fa-calendar-check"></i>
+                        </span> {{ post.created_datetime }}
+                    </span>
+
+                    <span class="column is-half" style="overflow: hidden;white-space: nowrap; text-overflow: ellipsis;" title="Posted by {{ post.owner.first_name }} {{ post.owner.last_name }}">
+                        <span class="icon">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <a class="is-link" href="javascript:void(0)" onclick="showUserData({{ post.owner.id }})">{{ post.owner.first_name }} {{ post.owner.last_name }}</a>
+                        
+                    </span>
+                </div>
+                
+
+                <div class="p-l-md p-t-sm p-r-md m-b-sm" style="height: 160px; border: 1px solid #ccc; overflow: hidden;white-space: nowrap; text-overflow: ellipsis;">
+                    <div style="overflow: hidden;white-space: nowrap; text-overflow: ellipsis;" title="{{ post.service.name }}">
+                        <span class="has-text-weight-semibold">Service</span>:
+                        <a href="{{ post.get_absolute_url }}" class="has-text-weight-bold has-text-gray">{{ post.service.name }}</a>
+                    </div>
+                    <div style="height: 40px; overflow: hidden;white-space: nowrap; text-overflow: ellipsis;" title="{{ post.service.info }}">
+                        {{ post.service.info }}
+                    </div>
+
+                    <div title="Service since {{ post.service.start_datetime }}">
+                        <span class="has-text-weight-semibold"> From</span>: {{ post.service.start_datetime }}
+                    </div>
+                    
+                    <div title="Service till {{ post.service.end_datetime }}">
+                        <span class="has-text-weight-semibold"> To</span>: {{ post.service.end_datetime }}
+                    </div>
+
+                    <div class="tags m-t-xs" style="height: 30px; overflow: hidden;white-space: nowrap; text-overflow: ellipsis;" title="TAGS: {%for tag in post.service.tags.all %}{{tag}}, {% endfor %}">
+                        {% for tag in post.service.tags.all %}
+                        <span class="tag is-dark">
+                            {{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <div class=" has-text-centered">
+                    <a href="{{ post.get_absolute_url }}">View Details & Respond</a>
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+
+    
+{% endblock %}

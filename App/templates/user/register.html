@@ -1,0 +1,106 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Register{% endblock %}
+
+
+{% block page-content %}
+    {% load static %}
+    <script src="{% static 'js/user.js' %}" defer></script>
+    
+  <div class="">
+    <form id="register-form" method="post" action="{% url 'user:register' %}" class="box center-h p-lg" style="max-width: 700px;">
+        {% csrf_token %}
+
+        <div class="field title is-4 has-text-centered p-md">
+            New User Registration
+        </div>
+
+        <p class="has-text-centered m-t-md m-b-lg">
+            <i class="fas fa-user-plus is-size-3"></i>
+        </p>
+
+        <div class="columns m-t-md">
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label">First Name</label>
+                    <div class="control">
+                        <input type="text" class="input" name="first_name" placeholder="John" required />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Last Name</label>
+                    <div class="control">
+                        <input type="text" class="input" name="last_name" placeholder="Doe" required />
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <label class="label">Bio</label>
+                    <div class="control">
+                        <textarea class="input" name="bio" style="resize: vertical; min-height: 115px; max-height: 200px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Set Availability</label>
+                    <div class="help">Are you currently available to provide services?</div>
+                    
+                    <input type="radio" name="available" value="1" required /> Yes
+                    <input type="radio" name="available" value="0" class="m-l-md" required checked /> No
+                </div>
+
+            </div>
+
+            <div class="column is-half">
+                <div class="field">
+                    <label class="label">Phone</label>
+                    <div class="control">
+                        <input type="tel" class="input" name="phone" placeholder="+7 (928) 9387 8219" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Address</label>
+                    <div class="control">
+                        <input type="text" class="input" name="address" placeholder="Universitetskaya St 1, Innopolis, Tatarstan" />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        <input type="email" class="input" name="username" placeholder="you@example.com" required />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Password</label>
+                    <div class="control">
+                        <input type="password" class="input" name="confirm_password" required />
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Confirm Password</label>
+                    <div class="control">
+                        <input type="password" class="input" name="password" required />
+                    </div>
+                </div>
+
+                <div class="field is-grouped m-t-lg">
+                    <div class="control">
+                        <input type="submit" class="button p-l-xl p-r-xl is-link" value="Register" />
+                    </div>
+                    <div class="control">
+                        <button class="button p-l-lg p-r-lg is-dark" onclick="clearLoginForm();">Clear</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </form>
+  </div>
+{% endblock %}

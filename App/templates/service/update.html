@@ -1,0 +1,195 @@
+{% extends "../base_generic.html" %}
+
+{% block title-main %}Create new Service Post{% endblock %}
+
+{% block page-content %}
+
+    {% load static %}
+    <script src="{% static 'js/service.js' %}"></script>
+
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+            <li>
+                <a href="{% url 'service:explore' %}">
+                    <span>Services</span>
+                </a>
+            </li>
+            
+            <li class="is-active">
+                <a href="{% url 'service:create' %}">
+                    <span>Update Service Post</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="m-t-lg m-b-lg p-md has-text-centered">
+        <h2 class="title is-4">Updating post:
+            <span class="has-text-grey">{{ post.title }}</span>
+        </h2>
+        <p class="subtitle is-6">
+            This page will let you update an existing post you own.
+        </p>
+    </div>
+
+    <form method="POST" action="{% url 'service:update' post.id %}">
+        {% csrf_token %}
+        
+        <div class="has-text-centered is-size-5 m-t-lg m-b-lg has-text-weight-semibold">About the service</div>
+ 
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Name</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control is-expanded">
+                        <input class="input" name="service-name" type="text" placeholder="Name of the service" value="{{ post.service.name }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Short Description</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control is-expanded">
+                        <textarea name="service-description" class="textarea is-fullwidth" placeholder="Describe the service shortly." style="resize: vertical; min-height: 75px; max-height: 140px;">{{ post.service.info }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Service Period</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input name="service-start-datetime" type="datetime-local" class="input" value="{{ post.service.start_datetime|date:'Y-m-d' }}T{{post.service.start_datetime|time:'H:i'}}" />
+                    </p>
+                </div>
+                <div class="field has-text-centered">
+                    <label class="label is-size-5">to</label>
+                </div>
+                <div class="field">
+                    <input name="service-end-datetime" type="datetime-local" class="input" value="{{ post.service.end_datetime|date:'Y-m-d' }}T{{post.service.end_datetime|time:'H:i'}}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label">
+                <label class="label">Location</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <input name="service-location" type="text" class="input" placeholder="Where do you want this service offered? Enter 'Online', or a physical location?" value="{{ post.service.location }} "/>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="field is-horizontal">
+            <div class="field-label">
+                <label class="label">Tags related</label>
+            </div>
+            
+            <div class="field-body">
+                <div class="field">
+                    
+                    <div class="field level is-grouped is-grouped-multiline" id="tags">
+                        <div class="control">
+                            <span class="button" onclick="addTag('');">+</span>
+                        </div>
+
+                        <select name="service-tags" multiple hidden>
+                            
+                        </select>
+
+                        {% for tag in post.service.tags.all %}
+                        <script>
+                            addTag("{{tag.label}}");
+                            
+                        </script>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="field help is-expanded">
+                        Assigning tags related to service (e.g. Web Development, Car Repair, Renting, etc.) helps your post reach appropriate audience quickly and correctly.
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="has-text-centered is-size-5 m-t-lg m-b-lg has-text-weight-semibold">About your post</div>
+ 
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Post Title</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control is-expanded">
+                        <input name="post-title" class="input" type="text" placeholder="The title you want your post to be identified with.." value="{{ post.title }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Message</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control is-expanded">
+                        <textarea name="post-description" class="textarea" placeholder="Additional message you want to display along your post?" style="resize: vertical; min-height: 105px; max-height: 160px;">{{ post.description }}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label ">
+                <label class="label">Post Intent</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control is-expanded">
+                        <label class="radio">
+                            <input type="radio" name="is_request_post" value="1" {% if post.is_request_post %}checked{% endif %}>
+                            I am requesting this service.
+                        </label>
+                        
+                        <label class="radio">
+                            <input type="radio" name="is_request_post" value="0" {% if not post.is_request_post %}checked{% endif %}>
+                            I am offering this service.
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label">
+                <!-- Left empty for spacing -->
+            </div>
+            
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <input type="submit" class="button is-link" value="Update Post" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+{% endblock %}
