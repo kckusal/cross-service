@@ -102,7 +102,7 @@ def register(request):
             user_profile.save()
 
             notification = Notification()
-            notification.owner = request.user
+            notification.owner = user
             notification.created_datetime = datetime.datetime.now()
             notification.text = "You created new user profile information!"
             notification.target_url = ""
