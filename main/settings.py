@@ -83,11 +83,7 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 LOGIN_URL = 'user:login'    # @login_required decorator redirects here for login
 LOGIN_REDIRECT_URL = 'service:index'   # after login, the app is redirected to this url
