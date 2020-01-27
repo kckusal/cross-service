@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "name": "cross-service",
+    "builds": [{
+        "src": "App/main/wsgi.py",
+        "use": "@ardnt/now-python-wsgi",
+        "config": { "maxLambdaSize": "15mb" }
+    }],
+    "routes": [{
+        "src": "/(.*)",
+        "dest": "App/main/wsgi.py"
+    }]
+}
