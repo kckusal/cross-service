@@ -8,7 +8,7 @@ SECRET_KEY = '33el*v@@)zi57r_q_1nrjta^tq6n&8hw(v1w(=)aiw#oe1p9dz'
 DEBUG = True
 
 # SECURITY WARNING: make sure you update this to your websites URL
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*', 'now.sh']
 X_FRAME_OPTIONS = 'ALLOW ALL'
 
 INSTALLED_APPS = [
