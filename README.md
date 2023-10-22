@@ -4,6 +4,14 @@ It is an online platform where anyone can join and offer their services to poten
 # Demo
 For the time being, a demo has been published and hosted at [https://crossservice-final--kckusal.repl.co](https://crossservice-final--kckusal.repl.co). You can register as a new user and start using the service immediately.
 
+## Screenshots
+<img src="./demo/images/login.png" height="300px" />
+<img src="./demo/images/register.png" height="300px" />
+<img src="./demo/images/dashboard.png" height="300px" />
+<img src="./demo/images/notifications.png" height="300px" />
+<img src="./demo/images/settings.png" height="300px" />
+<img src="./demo/images/service-post.png" height="300px" />
+
 # Launching the application locally
 1. Install latest version of django framework
 
